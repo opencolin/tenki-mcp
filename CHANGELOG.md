@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.7.0] — 2026-07-20 — Workspace administration
+
+Workspace-level administration: sandbox usage reporting and get/update of workspace sandbox settings. Live-verified. (SSH access + snapshot-retention settings are tracked for a follow-up — see docs/plans/STATE.md.)
+
+**Tools:** tenki_get_workspace_usage, tenki_get_workspace_sandbox_settings, tenki_update_workspace_sandbox_settings
+
 ## [0.6.0] — 2026-07-20 — Custom runtimes — templates & registry
 
 Bring-your-own-runtime: define an environment once and boot into it warm. Templates add the platform's first async job surface (build, poll, cancel). The registry publishes versioned custom images with a private-by-default ACL surface. List paths live-verified.
