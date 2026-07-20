@@ -40,19 +40,25 @@ Once published to npm this becomes `"command": "npx", "args": ["-y", "tenki-mcp"
 
 ## Tools
 
-| Tool | What it does |
+**66 tools** across the Tenki sandbox surface, grouped by domain:
+
+| Domain | Tools |
 |---|---|
-| `tenki_whoami` | Identity + workspaces for the key (cheap credential test) |
-| `tenki_run_code` | **One-shot**: boot a throwaway microVM, run shell/python/javascript, return output, tear it down |
-| `tenki_create_sandbox` | Create a persistent sandbox (boots in ~2s); returns session + data-plane endpoint |
-| `tenki_get_sandbox` | State + metadata for a sandbox |
-| `tenki_list_sandboxes` | List sandboxes in the workspace |
-| `tenki_terminate_sandbox` | Destroy a sandbox |
-| `tenki_pause_sandbox` / `tenki_resume_sandbox` | Suspend / restore |
-| `tenki_exec` | Run a command in a sandbox; stdout/stderr/exit code inline |
-| `tenki_read_file` / `tenki_write_file` / `tenki_list_files` | Filesystem I/O (data plane) |
-| `tenki_git` | git clone / checkout / diff / log / status / add / commit / pull / push / fetchPR |
-| `tenki_expose_port` / `tenki_list_exposed_ports` | Public preview URLs for a server in the sandbox |
+| **Identity** | `tenki_whoami` |
+| **Run** | `tenki_run_code` (one-shot: boot → run shell/python/js → tear down) |
+| **Sandboxes** | `tenki_create_sandbox` · `tenki_get_sandbox` · `tenki_list_sandboxes` · `tenki_terminate_sandbox` · `tenki_pause_sandbox` · `tenki_resume_sandbox` |
+| **Session admin** | `tenki_extend_sandbox` · `tenki_update_sandbox` · `tenki_terminate_sandboxes` (bulk) · `tenki_report_sandbox_activity` · `tenki_list_workspace_sandboxes` · `tenki_list_project_sandboxes` |
+| **Exec** | `tenki_exec` (stdout/stderr/exit inline) |
+| **Files** | `tenki_read_file` · `tenki_write_file` · `tenki_list_files` · `tenki_stat_path` · `tenki_make_dir` · `tenki_remove_path` · `tenki_move_path` |
+| **Git** | `tenki_git` (clone/checkout/diff/log/status/add/commit/pull/push/fetchPR) |
+| **Ports & previews** | `tenki_expose_port` · `tenki_list_exposed_ports` · `tenki_unexpose_port` · `tenki_create_preview_url` · `tenki_open_preview` · `tenki_list_preview_urls` |
+| **Snapshots** | create · get · list · list-session · list-dangling · update · delete · get-download-url |
+| **Volumes** | create · get · list · update · delete · resize · attach · detach |
+| **Templates** | create · get · list · update · delete · build · cancel-build · get-build · list-active-builds |
+| **Registry** (custom images) | publish · get · list · set-visibility · delete · delete-version · resolve-ref · share · list-share-grants |
+| **Workspace** | `tenki_get_workspace_usage` · `tenki_get_workspace_sandbox_settings` · `tenki_update_workspace_sandbox_settings` |
+
+Full per-release breakdown in [CHANGELOG.md](CHANGELOG.md); the plan through v2.0 is in [docs/plans/ROADMAP.md](docs/plans/ROADMAP.md).
 
 ## Auth
 
@@ -68,11 +74,11 @@ The wire details are ported from the live-verified [n8n community node](https://
 
 ## Roadmap
 
-- Snapshots, volumes, templates, and the image registry as tools
-- Streaming exec + interactive shells (needs a gRPC/Connect-streaming transport)
-- Binary file transfer via signed artifact URLs
-- An HTTP/SSE transport (in addition to stdio) for hosted use
-- Publish to npm + list in MCP registries
+Shipped v0.2→v0.7: filesystem completion, session/fleet control, preview URLs, snapshots+volumes, templates+registry, workspace admin. See [ROADMAP.md](docs/plans/ROADMAP.md). Still ahead:
+
+- **v1.0** — a CI parity-audit that fails the build if any API method lacks a tool; npm publish; MCP-registry listings
+- **v2.0** — streaming exec + interactive shells + an HTTP/SSE transport (needs a gRPC/Connect-streaming transport, the one thing plain HTTP can't do)
+- Binary file transfer via signed artifact URLs; batch file writes; SSH access; snapshot-retention settings
 
 ## Related
 

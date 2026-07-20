@@ -55,11 +55,13 @@ Auth note: the `tenki` CLI (v0.19.0+) stores a ~428-char session token in `~/.co
 - Ticks: log progress here frequently so any agent can resume.
 
 ## In flight / next
-- [~] PM council roadmap → ROADMAP.md — workflow `wi7fd5rv4` running (4 PM proposals in, synthesizer finishing)
-- [~] Fan-out build of the 8 remaining modules — workflow `w08nnq8in` running (8 worktree agents, each grounded in the n8n reference for its domain, self-building)
-- [ ] Integrate returned modules → regenerate index.ts → build → live-verify each new domain
-- [ ] Cut releases v0.2 → v1.0; publish to npm; list in MCP registries
-- [ ] v2.0: streaming + HTTP transport
+- [x] PM council roadmap → `docs/plans/ROADMAP.md` (8 releases, v0.2→v2.0).
+- [x] Fan-out build of the 8 remaining modules (workflow `w08nnq8in`, 8/8 compiled).
+- [x] Integrated → **66 tools** register clean; live-verified (23/24 checks; the 1 miss is a workspace volume quota, not a bug — 2 real preview shape bugs found & fixed).
+- [x] Cut releases **v0.2.0 → v0.7.0**, each built + tagged (files → sessions → previews → snapshots+volumes → templates+registry → workspace).
+- [ ] **v1.0** — CI parity-audit gate (fail build if any SandboxService/DataPlane method lacks a tool) → then **npm publish + MCP-registry listing (HOLD for Colin's go-ahead — outward distribution)**.
+- [ ] **v2.0** — streaming exec + interactive shells + HTTP/SSE transport (needs a Connect/gRPC-streaming transport).
+- [ ] Follow-ups: binary file transfer (artifact URLs), batch write, SSH tools, snapshot-retention settings. Leaked test volumes on the workspace (10× from Jul 17) flagged to Colin for cleanup.
 
 ### Tick log
-- 2026-07-20: v0.1 refactored into `src/tools/*` modules (67ba9a4); resumable docs added (32056e5); CHANGELOG seeded. Two workflows launched: roadmap council + parity fan-out. Integration pending their return.
+- 2026-07-20: v0.1 refactored into `src/tools/*` (67ba9a4); resumable docs (32056e5); council + parity fan-out workflows. Roadmap → ROADMAP.md (d50b3b4). 8 modules integrated (66 tools). Live-verify caught 2 preview shape bugs (projectId + slug) → fixed. Cut v0.2.0–v0.7.0 with per-release tags. README updated to the full surface. Next: v1.0 parity-audit + (hold) npm publish.
