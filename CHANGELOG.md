@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [1.0.0] — 2026-07-20 — Full CLI parity
+
+**84 tools — parity with the entire Tenki unary API**, enforced by a CI parity audit (scripts/parity-audit.mjs fails the build if any SandboxService / DataPlane / SSHGateway method lacks a tool; streaming methods are deferred to v2.0). This release closes the long tail on top of v0.7: binary artifact transfer (get_upload_url / get_download_url), SSH access (update_ssh_keys / issue_ssh_cert / list_ssh_gateways), the preview-URL primitives (get/delete/touch/bind/unbind/resolve), project-scoped list variants (volumes/snapshots/templates), snapshot-retention settings, and registry grant-revoke. New read paths live-verified against api.tenki.cloud; write/advanced additions are grounded in the decompiled SDK map and labeled where not exercised end-to-end.
+
+**Tools:** +18 to reach 84 (artifacts x2, ssh x3, preview extras x6, list variants x4, retention x2, revoke-grant x1)
+
 ## [0.7.0] — 2026-07-20 — Workspace administration
 
 Workspace-level administration: sandbox usage reporting and get/update of workspace sandbox settings. Live-verified. (SSH access + snapshot-retention settings are tracked for a follow-up — see docs/plans/STATE.md.)

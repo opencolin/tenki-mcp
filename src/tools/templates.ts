@@ -199,4 +199,24 @@ export function registerTemplates(server: McpServer, client: TenkiClient): void 
 		{ template_id: z.string().describe("The template ID whose active builds to list.") },
 		async ({ template_id }) => ok(await client.control("ListActiveTemplateBuilds", { templateId: template_id })),
 	);
+
+	server.tool(
+		"tenki_list_project_templates",
+		"List templates in a project (defaults to the key's first project). Supports pagination.",
+		{
+			project_id: z.string().optional().describe("Project to list (defaults to the key's first project)."),
+			page_size: z.number().int().positive().optional(),
+			page_token: z.string().optional(),
+		},
+		async ({ project_id, page_size, page_token }) => {
+			const projectId = project_id ?? (await client.resolveOwner()).projectId;
+			return ok(
+				await client.control("ListProjectTemplates", {
+					...(projectId ? { projectId } : {}),
+					...(page_size ? { pageSize: page_size } : {}),
+					...(page_token ? { pageToken: page_token } : {}),
+				}),
+			);
+		},
+	);
 }

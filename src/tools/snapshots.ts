@@ -130,4 +130,44 @@ export function registerSnapshots(server: McpServer, client: TenkiClient): void 
 		{ snapshot_id: z.string() },
 		async ({ snapshot_id }) => ok(await client.control("GetSnapshotDownloadURL", { snapshotId: snapshot_id })),
 	);
+
+	server.tool(
+		"tenki_list_workspace_snapshots",
+		"List all snapshots in a workspace (defaults to the key's first workspace). Supports pagination.",
+		{
+			workspace_id: z.string().optional().describe("Workspace to list (defaults to the key's first workspace)."),
+			page_size: z.number().int().positive().optional(),
+			page_token: z.string().optional(),
+		},
+		async ({ workspace_id, page_size, page_token }) => {
+			const workspaceId = workspace_id ?? (await client.resolveOwner()).workspaceId;
+			return ok(
+				await client.control("ListWorkspaceSnapshots", {
+					...(workspaceId ? { workspaceId } : {}),
+					...(page_size ? { pageSize: page_size } : {}),
+					...(page_token ? { pageToken: page_token } : {}),
+				}),
+			);
+		},
+	);
+
+	server.tool(
+		"tenki_list_project_snapshots",
+		"List all snapshots in a project (defaults to the key's first project). Supports pagination.",
+		{
+			project_id: z.string().optional().describe("Project to list (defaults to the key's first project)."),
+			page_size: z.number().int().positive().optional(),
+			page_token: z.string().optional(),
+		},
+		async ({ project_id, page_size, page_token }) => {
+			const projectId = project_id ?? (await client.resolveOwner()).projectId;
+			return ok(
+				await client.control("ListProjectSnapshots", {
+					...(projectId ? { projectId } : {}),
+					...(page_size ? { pageSize: page_size } : {}),
+					...(page_token ? { pageToken: page_token } : {}),
+				}),
+			);
+		},
+	);
 }

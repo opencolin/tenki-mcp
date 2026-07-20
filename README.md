@@ -40,7 +40,7 @@ Once published to npm this becomes `"command": "npx", "args": ["-y", "tenki-mcp"
 
 ## Tools
 
-**66 tools** across the Tenki sandbox surface, grouped by domain:
+**84 tools** — full parity with the Tenki unary API (enforced by a CI [parity audit](scripts/parity-audit.mjs)), grouped by domain:
 
 | Domain | Tools |
 |---|---|
@@ -51,7 +51,9 @@ Once published to npm this becomes `"command": "npx", "args": ["-y", "tenki-mcp"
 | **Exec** | `tenki_exec` (stdout/stderr/exit inline) |
 | **Files** | `tenki_read_file` · `tenki_write_file` · `tenki_list_files` · `tenki_stat_path` · `tenki_make_dir` · `tenki_remove_path` · `tenki_move_path` |
 | **Git** | `tenki_git` (clone/checkout/diff/log/status/add/commit/pull/push/fetchPR) |
-| **Ports & previews** | `tenki_expose_port` · `tenki_list_exposed_ports` · `tenki_unexpose_port` · `tenki_create_preview_url` · `tenki_open_preview` · `tenki_list_preview_urls` |
+| **Ports & previews** | expose · list-exposed · unexpose · create-preview-url · open-preview · list/get/delete-preview-url · touch-preview · bind/unbind-preview-url · resolve-preview-token |
+| **Artifacts** (binary transfer) | `tenki_get_upload_url` · `tenki_get_download_url` (signed URLs for binary PUT/GET) |
+| **SSH** | `tenki_update_ssh_keys` · `tenki_issue_ssh_cert` · `tenki_list_ssh_gateways` |
 | **Snapshots** | create · get · list · list-session · list-dangling · update · delete · get-download-url |
 | **Volumes** | create · get · list · update · delete · resize · attach · detach |
 | **Templates** | create · get · list · update · delete · build · cancel-build · get-build · list-active-builds |

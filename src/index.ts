@@ -30,6 +30,8 @@ import { registerVolumes } from "./tools/volumes.js";
 import { registerTemplates } from "./tools/templates.js";
 import { registerRegistry } from "./tools/registry.js";
 import { registerWorkspace } from "./tools/workspace.js";
+import { registerArtifacts } from "./tools/artifacts.js";
+import { registerSsh } from "./tools/ssh.js";
 
 const token = process.env.TENKI_AUTH_TOKEN || process.env.TENKI_API_KEY;
 if (!token) {
@@ -39,7 +41,7 @@ if (!token) {
 const baseUrl = process.env.TENKI_API_ENDPOINT || process.env.TENKI_API_URL || undefined;
 const client = new TenkiClient(token, baseUrl);
 
-const server = new McpServer({ name: "tenki", version: "0.7.0" });
+const server = new McpServer({ name: "tenki", version: "1.0.0" });
 
 /** Every tool module registers here. Add new domains to this list. */
 const modules = [
@@ -58,6 +60,8 @@ const modules = [
 	registerTemplates,
 	registerRegistry,
 	registerWorkspace,
+	registerArtifacts,
+	registerSsh,
 ];
 for (const register of modules) register(server, client);
 

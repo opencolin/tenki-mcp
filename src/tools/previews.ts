@@ -111,4 +111,67 @@ export function registerPreviews(server: McpServer, client: TenkiClient): void {
 			);
 		},
 	);
+
+	// ── Get / delete a specific preview URL ───────────────────────────────────────
+	server.tool(
+		"tenki_get_preview_url",
+		"Fetch a specific preview URL's details by id (project-scoped).",
+		{
+			preview_url_id: z.string().describe("The preview URL id."),
+			project_id: z.string().optional().describe("Project scope (defaults to the key's first project)."),
+		},
+		async ({ preview_url_id, project_id }) => {
+			const projectId = project_id ?? (await client.resolveOwner()).projectId;
+			return ok(await client.control("GetPreviewUrl", { previewUrlId: preview_url_id, ...(projectId ? { projectId } : {}) }));
+		},
+	);
+
+	server.tool(
+		"tenki_delete_preview_url",
+		"Delete a preview URL by id, taking it permanently offline (project-scoped).",
+		{
+			preview_url_id: z.string().describe("The preview URL id to delete."),
+			project_id: z.string().optional().describe("Project scope (defaults to the key's first project)."),
+		},
+		async ({ preview_url_id, project_id }) => {
+			const projectId = project_id ?? (await client.resolveOwner()).projectId;
+			return ok(await client.control("DeletePreviewUrl", { previewUrlId: preview_url_id, ...(projectId ? { projectId } : {}) }));
+		},
+	);
+
+	// ── Touch (keep-alive) a preview ──────────────────────────────────────────────
+	server.tool(
+		"tenki_touch_preview",
+		"Refresh (keep-alive) a live preview for a port so it isn't torn down as idle.",
+		{ session_id: z.string(), port: portSchema.describe("The exposed port to keep alive.") },
+		async ({ session_id, port }) => ok(await client.control("TouchPreview", { sessionId: session_id, port })),
+	);
+
+	// ── Bind / unbind a named preview URL to a session+port ───────────────────────
+	// Advanced routing primitives (shapes SDK-name-verified; not exercised end-to-end here).
+	server.tool(
+		"tenki_bind_preview_url",
+		"Bind a named preview URL to a sandbox session and port (advanced routing).",
+		{
+			preview_url_id: z.string().describe("The preview URL id to bind."),
+			session_id: z.string(),
+			port: portSchema.describe("The port to route the preview URL to."),
+		},
+		async ({ preview_url_id, session_id, port }) =>
+			ok(await client.control("BindPreviewUrl", { previewUrlId: preview_url_id, sessionId: session_id, port })),
+	);
+
+	server.tool(
+		"tenki_unbind_preview_url",
+		"Unbind a named preview URL from its current session/port (advanced routing).",
+		{ preview_url_id: z.string().describe("The preview URL id to unbind.") },
+		async ({ preview_url_id }) => ok(await client.control("UnbindPreviewUrl", { previewUrlId: preview_url_id })),
+	);
+
+	server.tool(
+		"tenki_resolve_preview_token",
+		"Resolve a preview token to the sandbox/port it points at (advanced).",
+		{ token: z.string().describe("The preview token to resolve.") },
+		async ({ token }) => ok(await client.control("ResolvePreviewToken", { token })),
+	);
 }

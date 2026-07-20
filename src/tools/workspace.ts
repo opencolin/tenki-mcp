@@ -100,4 +100,32 @@ export function registerWorkspace(server: McpServer, client: TenkiClient): void 
 			);
 		},
 	);
+
+	server.tool(
+		"tenki_get_snapshot_retention_settings",
+		"Get the workspace's snapshot-retention policy (how long snapshots are kept before automatic cleanup).",
+		{ workspace_id: z.string().optional().describe("Workspace (defaults to the key's first workspace).") },
+		async ({ workspace_id }) => {
+			const workspaceId = workspace_id ?? (await client.resolveOwner()).workspaceId;
+			return ok(await client.control("GetWorkspaceSnapshotRetentionSettings", { ...(workspaceId ? { workspaceId } : {}) }));
+		},
+	);
+
+	server.tool(
+		"tenki_update_snapshot_retention_settings",
+		"Update the workspace's snapshot-retention policy (days to keep snapshots before automatic cleanup).",
+		{
+			retention_days: z.number().int().positive().describe("Days to retain snapshots before automatic cleanup."),
+			workspace_id: z.string().optional().describe("Workspace (defaults to the key's first workspace)."),
+		},
+		async ({ retention_days, workspace_id }) => {
+			const workspaceId = workspace_id ?? (await client.resolveOwner()).workspaceId;
+			return ok(
+				await client.control("UpdateWorkspaceSnapshotRetentionSettings", {
+					...(workspaceId ? { workspaceId } : {}),
+					retentionDays: retention_days,
+				}),
+			);
+		},
+	);
 }

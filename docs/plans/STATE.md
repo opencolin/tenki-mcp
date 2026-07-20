@@ -59,7 +59,8 @@ Auth note: the `tenki` CLI (v0.19.0+) stores a ~428-char session token in `~/.co
 - [x] Fan-out build of the 8 remaining modules (workflow `w08nnq8in`, 8/8 compiled).
 - [x] Integrated → **66 tools** register clean; live-verified (23/24 checks; the 1 miss is a workspace volume quota, not a bug — 2 real preview shape bugs found & fixed).
 - [x] Cut releases **v0.2.0 → v0.7.0**, each built + tagged (files → sessions → previews → snapshots+volumes → templates+registry → workspace).
-- [ ] **v1.0** — CI parity-audit gate (fail build if any SandboxService/DataPlane method lacks a tool) → then **npm publish + MCP-registry listing (HOLD for Colin's go-ahead — outward distribution)**.
+- [x] **v1.0.0 — FULL PARITY.** 84 tools; parity audit green (100% of tool-worthy unary methods); CI workflow enforces it. Added artifacts (binary transfer), SSH, preview-token primitives, project-scoped list variants, snapshot-retention settings, registry grant-revoke. New safe reads live-verified (6/6); write/advanced additions SDK-grounded (labeled).
+- [ ] **npm publish + MCP-registry listing — HOLD for Colin's go-ahead** (outward distribution to a new namespace; the one step that isn't a git push). Everything is ready: `npm publish` from the repo root after `npm run build`.
 - [ ] **v2.0** — streaming exec + interactive shells + HTTP/SSE transport (needs a Connect/gRPC-streaming transport).
 - [ ] Follow-ups: binary file transfer (artifact URLs), batch write, SSH tools, snapshot-retention settings. Leaked test volumes on the workspace (10× from Jul 17) flagged to Colin for cleanup.
 

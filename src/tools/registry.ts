@@ -187,4 +187,15 @@ export function registerRegistry(server: McpServer, client: TenkiClient): void {
 				}),
 			),
 	);
+
+	server.tool(
+		"tenki_revoke_image_share_grant",
+		"Revoke a previously-granted share of a registry image, removing another workspace's access to it.",
+		{
+			reference: z.string().describe("The image reference whose share grant to revoke."),
+			grantee_workspace_id: z.string().describe("The workspace whose access to revoke."),
+		},
+		async ({ reference, grantee_workspace_id }) =>
+			ok(await client.control("RevokeRegistryShareGrant", { reference, granteeWorkspaceId: grantee_workspace_id })),
+	);
 }

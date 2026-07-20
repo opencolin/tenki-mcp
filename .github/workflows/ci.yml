@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install
+      - name: Build
+        run: npm run build
+      - name: Parity audit (fails if any API method lacks a tool)
+        run: node scripts/parity-audit.mjs
+      - name: Tools register (offline smoke)
+        run: |
+          COUNT=$( (printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'; sleep 2) \
+            | TENKI_API_KEY=tk_dummy node dist/index.js 2>/dev/null \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const l of s.split("\n")){if(!l.trim())continue;try{const m=JSON.parse(l);if(m.id===2)console.log(m.result.tools.length)}catch{}}})' )
+          echo "registered tools: $COUNT"
+          test "$COUNT" -ge 84

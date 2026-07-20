@@ -90,9 +90,13 @@ export class TenkiClient {
 		this.baseUrl = baseUrl.replace(/\/+$/, "");
 	}
 
-	/** Unary control-plane call. Retries RateLimited responses with exponential backoff. */
-	async control(method: string, body: Record<string, unknown> = {}): Promise<Record<string, any>> {
-		const url = `${this.baseUrl}/${CONTROL_SERVICE}/${method}`;
+	/**
+	 * Unary control-plane call. Retries RateLimited responses with exponential backoff.
+	 * `service` defaults to SandboxService; pass another fully-qualified ConnectRPC
+	 * service (e.g. the SSH gateway service) for methods hosted elsewhere.
+	 */
+	async control(method: string, body: Record<string, unknown> = {}, service: string = CONTROL_SERVICE): Promise<Record<string, any>> {
+		const url = `${this.baseUrl}/${service}/${method}`;
 		for (let attempt = 0; ; attempt++) {
 			const res = await fetch(url, {
 				method: "POST",
