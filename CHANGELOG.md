@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.3.0] — 2026-07-20 — Session lifecycle & fleet control
+
+Extended session control: extend a sandbox's wall-clock lifetime, update mutable fields (name/tags/idle-timeout/max-duration), bulk-terminate (explicit-id-only, irreversible), an activity heartbeat, and workspace/project-scoped fleet listing. Live-verified.
+
+**Tools:** tenki_extend_sandbox, tenki_update_sandbox, tenki_terminate_sandboxes, tenki_report_sandbox_activity, tenki_list_workspace_sandboxes, tenki_list_project_sandboxes
+
 ## [0.2.0] — 2026-07-20 — Filesystem completion (data plane)
 
 Data-plane filesystem metadata + mutation, completing the file surface beyond read/write/list: stat, mkdir (recursive), remove (recursive), and move (exec-backed mv, since the data plane exposes no Move RPC). Live-verified against api.tenki.cloud.
