@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.5.0] — 2026-07-20 — Persistent state — snapshots & volumes
+
+Persistent state for the iterative agent loop. Snapshots checkpoint a known-good sandbox to branch or roll back from; volumes are durable disks that carry a cache or dataset across otherwise-ephemeral sandboxes. Destructive verbs are explicit-target-only. Snapshots live-verified; volume shapes verified against the SDK (write path blocked only by a workspace volume quota during testing).
+
+**Tools:** 8 snapshot tools + 8 volume tools (create/get/list/update/delete/resize/attach/detach)
+
 ## [0.4.0] — 2026-07-20 — Preview URLs — the ship surface
 
 The ship surface: turn an exposed port into a public, shareable preview URL an agent can hand back. Project-scoped (live-verified: requires projectId + a validated slug). Completes the ports resource with unexpose.
