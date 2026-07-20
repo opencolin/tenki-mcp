@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.6.0] — 2026-07-20 — Custom runtimes — templates & registry
+
+Bring-your-own-runtime: define an environment once and boot into it warm. Templates add the platform's first async job surface (build, poll, cancel). The registry publishes versioned custom images with a private-by-default ACL surface. List paths live-verified.
+
+**Tools:** 9 template tools (create/get/list/update/delete + build/cancel-build/get-build/list-active-builds) + 9 registry tools (publish/get/list/set-visibility/delete/delete-version/resolve-ref/share/list-share-grants)
+
 ## [0.5.0] — 2026-07-20 — Persistent state — snapshots & volumes
 
 Persistent state for the iterative agent loop. Snapshots checkpoint a known-good sandbox to branch or roll back from; volumes are durable disks that carry a cache or dataset across otherwise-ephemeral sandboxes. Destructive verbs are explicit-target-only. Snapshots live-verified; volume shapes verified against the SDK (write path blocked only by a workspace volume quota during testing).
