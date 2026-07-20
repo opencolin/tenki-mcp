@@ -55,8 +55,11 @@ Auth note: the `tenki` CLI (v0.19.0+) stores a ~428-char session token in `~/.co
 - Ticks: log progress here frequently so any agent can resume.
 
 ## In flight / next
-- [ ] PM council roadmap → ROADMAP.md
-- [ ] Fan-out build of the 8 remaining modules
-- [ ] Live-verify each new domain against the API
+- [~] PM council roadmap → ROADMAP.md — workflow `wi7fd5rv4` running (4 PM proposals in, synthesizer finishing)
+- [~] Fan-out build of the 8 remaining modules — workflow `w08nnq8in` running (8 worktree agents, each grounded in the n8n reference for its domain, self-building)
+- [ ] Integrate returned modules → regenerate index.ts → build → live-verify each new domain
 - [ ] Cut releases v0.2 → v1.0; publish to npm; list in MCP registries
 - [ ] v2.0: streaming + HTTP transport
+
+### Tick log
+- 2026-07-20: v0.1 refactored into `src/tools/*` modules (67ba9a4); resumable docs added (32056e5); CHANGELOG seeded. Two workflows launched: roadmap council + parity fan-out. Integration pending their return.
