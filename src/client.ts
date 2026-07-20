@@ -161,14 +161,21 @@ export class TenkiClient {
 		return (wrapped.response as Record<string, any>) ?? wrapped;
 	}
 
-	/** Resolve the calling identity (used to stamp owner on CreateSession). */
-	async resolveOwner(): Promise<{ ownerType?: string; ownerId?: string; workspaceId?: string }> {
+	/**
+	 * Resolve the calling identity + a default workspace/project for CreateSession
+	 * (which requires a projectId). Picks the first workspace that has a project so
+	 * the (workspace, project) pair stays consistent.
+	 */
+	async resolveOwner(): Promise<{ ownerType?: string; ownerId?: string; workspaceId?: string; projectId?: string }> {
 		const resp = await this.control("WhoAmI", {});
-		const ws = Array.isArray(resp.workspaces) ? resp.workspaces[0] : undefined;
+		const workspaces: any[] = Array.isArray(resp.workspaces) ? resp.workspaces : [];
+		const ws = workspaces.find((w) => Array.isArray(w?.projects) && w.projects.length > 0) ?? workspaces[0];
+		const proj = Array.isArray(ws?.projects) ? ws.projects[0] : undefined;
 		return {
 			ownerType: resp.ownerType,
 			ownerId: resp.ownerId,
-			workspaceId: ws?.id ?? ws?.workspaceId,
+			workspaceId: ws?.workspaceId ?? ws?.id,
+			projectId: proj?.projectId ?? proj?.id,
 		};
 	}
 
@@ -281,6 +288,8 @@ export class TenkiClient {
 			...(owner.ownerType ? { ownerType: owner.ownerType } : {}),
 			...(owner.ownerId ? { ownerId: owner.ownerId } : {}),
 			...(owner.workspaceId ? { workspaceId: owner.workspaceId } : {}),
+			...(owner.projectId ? { projectId: owner.projectId } : {}),
+			...(opts.env && Object.keys(opts.env).length ? { env: opts.env } : {}),
 		});
 		const session = (create.session as Record<string, any>) ?? create;
 		const sessionId = (session.id ?? create.sessionId ?? create.id) as string;

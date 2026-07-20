@@ -68,15 +68,20 @@ server.tool(
 		snapshot_id: z.string().optional().describe("Boot from a snapshot."),
 		registry_ref: z.string().optional().describe("Boot from a custom registry image."),
 		tags: z.array(z.string()).optional().describe("Tags for later filtering."),
+		project_id: z.string().optional().describe("Project to create in (defaults to the key's first project)."),
+		workspace_id: z.string().optional().describe("Workspace to create in (defaults to the key's first workspace)."),
 		env: envSchema,
 		wait_ready: z.boolean().optional().describe("Poll until the sandbox is RUNNING before returning (default true)."),
 	},
 	async (a) => {
 		const owner = await client.resolveOwner();
+		const projectId = a.project_id ?? owner.projectId;
+		const workspaceId = a.workspace_id ?? owner.workspaceId;
 		const body: Record<string, unknown> = {
 			...(owner.ownerType ? { ownerType: owner.ownerType } : {}),
 			...(owner.ownerId ? { ownerId: owner.ownerId } : {}),
-			...(owner.workspaceId ? { workspaceId: owner.workspaceId } : {}),
+			...(workspaceId ? { workspaceId } : {}),
+			...(projectId ? { projectId } : {}),
 			...(a.name ? { name: a.name } : {}),
 			...(a.cpu_cores ? { cpuCores: a.cpu_cores } : {}),
 			...(a.memory_mb ? { memoryMb: a.memory_mb } : {}),
