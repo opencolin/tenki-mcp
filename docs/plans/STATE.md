@@ -61,7 +61,7 @@ Auth note: the `tenki` CLI (v0.19.0+) stores a ~428-char session token in `~/.co
 - [x] Cut releases **v0.2.0 → v0.7.0**, each built + tagged (files → sessions → previews → snapshots+volumes → templates+registry → workspace).
 - [x] **v1.0.0 — FULL PARITY.** 84 tools; parity audit green (100% of tool-worthy unary methods); CI workflow enforces it. Added artifacts (binary transfer), SSH, preview-token primitives, project-scoped list variants, snapshot-retention settings, registry grant-revoke. New safe reads live-verified (6/6); write/advanced additions SDK-grounded (labeled).
 - [ ] **npm publish + MCP-registry listing — HOLD for Colin's go-ahead** (outward distribution to a new namespace; the one step that isn't a git push). Everything is ready: `npm publish` from the repo root after `npm run build`.
-- [ ] **v2.0** — streaming exec + interactive shells + HTTP/SSE transport (needs a Connect/gRPC-streaming transport).
+- [~] **v2.0** — DESIGNED, not built. Full plan in `docs/plans/v2-streaming.md`. Two independent workstreams: (A) HTTP/SSE server transport — tractable, higher-value, ship first (needs a hosting-model call: single shared key vs per-request auth); (B) Tenki streaming methods (StreamCommandOutput + interactive Run/Dial/tunnels) — the hard part, gated by one experiment: does the gateway accept Connect streaming over HTTP/1.1 (fetch + envelope reader) or only gRPC/HTTP2 (bundle connect-node)? Do not ship B unverified.
 - [ ] Follow-ups: binary file transfer (artifact URLs), batch write, SSH tools, snapshot-retention settings. Leaked test volumes on the workspace (10× from Jul 17) flagged to Colin for cleanup.
 
 ### Tick log
