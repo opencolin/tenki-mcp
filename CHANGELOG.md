@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.2.0] — 2026-07-20 — Filesystem completion (data plane)
+
+Data-plane filesystem metadata + mutation, completing the file surface beyond read/write/list: stat, mkdir (recursive), remove (recursive), and move (exec-backed mv, since the data plane exposes no Move RPC). Live-verified against api.tenki.cloud.
+
+**Tools:** tenki_stat_path, tenki_make_dir, tenki_remove_path, tenki_move_path
+
 ## [0.1.0] — 2026-07-20
 Initial release. **15 MCP tools over stdio, live-verified against `api.tenki.cloud`.**
 

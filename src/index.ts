@@ -4,10 +4,10 @@
  *
  * Exposes Tenki's sandbox platform (disposable microVMs for AI agents) as MCP
  * tools, so any agent — Claude, Codex, Cursor — can create sandboxes, run code,
- * read/write files, run git, and expose preview URLs natively.
+ * manage files/snapshots/volumes/templates/images, run git, and expose preview URLs.
  *
- * Tools live in self-registering modules under ./tools; this file just wires the
- * client, registers each module, and connects the stdio transport.
+ * Tools live in self-registering modules under ./tools; this file wires the client,
+ * registers each module, and connects the stdio transport.
  *
  * Auth: set TENKI_API_KEY (or TENKI_AUTH_TOKEN) in the environment.
  */
@@ -22,6 +22,7 @@ import { registerExec } from "./tools/exec.js";
 import { registerFiles } from "./tools/files.js";
 import { registerGit } from "./tools/git.js";
 import { registerPorts } from "./tools/ports.js";
+import { registerFilesOps } from "./tools/files_ops.js";
 
 const token = process.env.TENKI_AUTH_TOKEN || process.env.TENKI_API_KEY;
 if (!token) {
@@ -31,7 +32,7 @@ if (!token) {
 const baseUrl = process.env.TENKI_API_ENDPOINT || process.env.TENKI_API_URL || undefined;
 const client = new TenkiClient(token, baseUrl);
 
-const server = new McpServer({ name: "tenki", version: "0.1.0" });
+const server = new McpServer({ name: "tenki", version: "0.2.0" });
 
 /** Every tool module registers here. Add new domains to this list. */
 const modules = [
@@ -42,6 +43,7 @@ const modules = [
 	registerFiles,
 	registerGit,
 	registerPorts,
+	registerFilesOps,
 ];
 for (const register of modules) register(server, client);
 
