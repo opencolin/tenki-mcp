@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [0.4.0] — 2026-07-20 — Preview URLs — the ship surface
+
+The ship surface: turn an exposed port into a public, shareable preview URL an agent can hand back. Project-scoped (live-verified: requires projectId + a validated slug). Completes the ports resource with unexpose.
+
+**Tools:** tenki_create_preview_url, tenki_open_preview, tenki_list_preview_urls, tenki_unexpose_port
+
 ## [0.3.0] — 2026-07-20 — Session lifecycle & fleet control
 
 Extended session control: extend a sandbox's wall-clock lifetime, update mutable fields (name/tags/idle-timeout/max-duration), bulk-terminate (explicit-id-only, irreversible), an activity heartbeat, and workspace/project-scoped fleet listing. Live-verified.

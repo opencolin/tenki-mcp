@@ -24,6 +24,7 @@ import { registerGit } from "./tools/git.js";
 import { registerPorts } from "./tools/ports.js";
 import { registerFilesOps } from "./tools/files_ops.js";
 import { registerSessionsAdmin } from "./tools/sessions_admin.js";
+import { registerPreviews } from "./tools/previews.js";
 
 const token = process.env.TENKI_AUTH_TOKEN || process.env.TENKI_API_KEY;
 if (!token) {
@@ -33,7 +34,7 @@ if (!token) {
 const baseUrl = process.env.TENKI_API_ENDPOINT || process.env.TENKI_API_URL || undefined;
 const client = new TenkiClient(token, baseUrl);
 
-const server = new McpServer({ name: "tenki", version: "0.3.0" });
+const server = new McpServer({ name: "tenki", version: "0.4.0" });
 
 /** Every tool module registers here. Add new domains to this list. */
 const modules = [
@@ -46,6 +47,7 @@ const modules = [
 	registerPorts,
 	registerFilesOps,
 	registerSessionsAdmin,
+	registerPreviews,
 ];
 for (const register of modules) register(server, client);
 
