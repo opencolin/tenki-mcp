@@ -113,7 +113,7 @@ export function registerVolumes(server: McpServer, client: TenkiClient): void {
 			size_bytes: sizeBytesSchema,
 		},
 		async ({ volume_id, size_bytes }) =>
-			ok(await client.control("ResizeVolume", { volumeId: volume_id, sizeBytes: size_bytes })),
+			ok(await client.control("ResizeVolume", { volumeId: volume_id, newSizeBytes: size_bytes })),
 	);
 
 	// ── Attach ────────────────────────────────────────────────────────────────

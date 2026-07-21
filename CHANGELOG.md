@@ -2,6 +2,10 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [1.0.1] — 2026-07-20 — Fix ResizeVolume field
+
+Live-verifying the volume write path (once a workspace volume-quota block was cleared) surfaced one real bug: `tenki_resize_volume` sent `sizeBytes` but the API expects `newSizeBytes`, so resizes were rejected. Fixed. Full volume lifecycle (create → get → update → resize → delete) now live-verified end-to-end.
+
 ## [1.0.0] — 2026-07-20 — Full CLI parity
 
 **84 tools — parity with the entire Tenki unary API**, enforced by a CI parity audit (scripts/parity-audit.mjs fails the build if any SandboxService / DataPlane / SSHGateway method lacks a tool; streaming methods are deferred to v2.0). This release closes the long tail on top of v0.7: binary artifact transfer (get_upload_url / get_download_url), SSH access (update_ssh_keys / issue_ssh_cert / list_ssh_gateways), the preview-URL primitives (get/delete/touch/bind/unbind/resolve), project-scoped list variants (volumes/snapshots/templates), snapshot-retention settings, and registry grant-revoke. New read paths live-verified against api.tenki.cloud; write/advanced additions are grounded in the decompiled SDK map and labeled where not exercised end-to-end.

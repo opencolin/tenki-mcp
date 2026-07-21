@@ -45,7 +45,7 @@ volId = cv?.volume?.id ?? cv?.id ?? cv?.volumeId;
 if (volId) {
 	await check("GetVolume", () => client.control("GetVolume", { volumeId: volId }));
 	await check("UpdateVolume (rename)", () => client.control("UpdateVolume", { volumeId: volId, name: "mcp-verify-vol-2" }));
-	await check("ResizeVolume", () => client.control("ResizeVolume", { volumeId: volId, sizeBytes: 2_097_152 }));
+	await check("ResizeVolume", () => client.control("ResizeVolume", { volumeId: volId, newSizeBytes: 2_097_152 }));
 	await check("DeleteVolume", () => client.control("DeleteVolume", { volumeId: volId }));
 } else console.log("  (skipped get/update/resize/delete — no volume id)");
 
