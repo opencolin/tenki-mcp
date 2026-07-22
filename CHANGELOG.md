@@ -2,6 +2,15 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [1.0.2] — 2026-07-21 — Fixes from comprehensive testing
+
+A PM-council test matrix (34 scenarios) executed via a worktree fan-out against live Tenki found **two real request-shape bugs**, both fixed and verified end-to-end:
+
+- **tenki_attach_volume** sent a flat request; AttachVolumeRequest nests the target under a `volume` sub-message (`{sessionId, volume:{volumeId, mountPath, readOnly?}}`). Every attach was rejected — this broke the volume warm-cache workflow. Fixed.
+- **tenki_list_image_share_grants** sent `reference`; the API field is `ref` (required). It was silently ignored, 400-ing every call and making the ACL-read surface unreachable. Fixed.
+
+Also: a real MCP **test suite** (`test/`) — a cleanup-safe harness driving the actual MCP protocol + 5 suites (coverage, client-integration, errors-edge, journeys, admin-previews) — **68 checks, all green**. Doc fixes (workspace tool names; create_template setup_script). See docs/plans/TEST-REPORT.md. No tool count change (84).
+
 ## [1.0.1] — 2026-07-20 — Fix ResizeVolume field
 
 Live-verifying the volume write path (once a workspace volume-quota block was cleared) surfaced one real bug: `tenki_resize_volume` sent `sizeBytes` but the API expects `newSizeBytes`, so resizes were rejected. Fixed. Full volume lifecycle (create → get → update → resize → delete) now live-verified end-to-end.

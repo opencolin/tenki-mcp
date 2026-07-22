@@ -128,11 +128,15 @@ export function registerVolumes(server: McpServer, client: TenkiClient): void {
 		},
 		async ({ session_id, volume_id, mount_path, read_only }) =>
 			ok(
+				// AttachVolumeRequest nests the target under a `volume` sub-message
+				// (live-verified: a flat volumeId is rejected "volume: value is required").
 				await client.control("AttachVolume", {
 					sessionId: session_id,
-					volumeId: volume_id,
-					mountPath: mount_path,
-					...(read_only !== undefined ? { readOnly: read_only } : {}),
+					volume: {
+						volumeId: volume_id,
+						mountPath: mount_path,
+						...(read_only !== undefined ? { readOnly: read_only } : {}),
+					},
 				}),
 			),
 	);

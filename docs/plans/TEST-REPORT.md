@@ -29,5 +29,34 @@ _Run 2026-07-21 against live `api.tenki.cloud` (server v1.0.1, 84 tools), throug
 ### Housekeeping
 - Cleaned leaked test resources found blocking quotas: **10 test volumes** (Jul 17) and **10 test templates** (Jul 17), plus **2 leaked sandboxes** from a timed-out run. **4 volumes remain stuck** server-side (orphaned attachment / sync-pending) and need Tenki-side attention.
 
-## Fan-out results
-_(appended when workflow `wa0r14nvg` completes — client-integration · errors-edge · journeys · admin-previews)_
+## Fan-out results — all suites GREEN after fixes
+
+Worktree fan-out (`wa0r14nvg`), 4 category suites (`test/*.test.mjs`), driven through the real MCP protocol. Final, after fixing the 2 bugs it found:
+
+| Suite | Result | Covers |
+|---|---|---|
+| `client-integration` | **14/0/0** | handshake, protocol negotiation (echoes latest + honors older), stdout purity (0 bytes when idle; JSON-RPC only), clean shutdown/no-orphan, full auth contract (no-key exit 1 · AUTH_TOKEN fallback · bad tk_/ory_st_/no-prefix keys → clean 401, token never echoed) |
+| `errors-edge` | **15/0/0** | zod bounds reject pre-network (-32602, no side effects); missing/empty ids not coerced; bulk-terminate `.min(1)` (no empty→all footgun); bogus ids → clean isError across 6 domains; unknown tool → clean error; run_code env/non-zero-exit/timeout honored + ephemeral self-terminates |
+| `journeys` | **5/0/0** | ship-code red→green loop; snapshot→restore (marker carried into a fresh microVM); **volume warm-cache** (attach→write→detach→reattach); template create→build→boot |
+| `admin-previews` | **18/0/0** | workspace/retention reads; SSH gateway routing + cert issue; preview-URL lifecycle (expose→create→get→list→delete→unexpose); registry read + ACL |
+
+**Total across all 5 suites (incl. coverage): 68 passed, 0 failed.**
+
+### 🐞 Two real bugs found by the fan-out — fixed & verified in **v1.0.2**
+| # | Bug | Fix |
+|---|---|---|
+| 7 | **`tenki_attach_volume` sent a flat request** — the API needs the target nested under a `volume` sub-message (`{sessionId, volume:{volumeId, mountPath, readOnly?}}`); every attach 400'd, breaking the volume warm-cache journey | ✅ nested shape; verified attach→detach live |
+| 8 | **`tenki_list_image_share_grants` sent `reference`** — the API field is `ref`; it was silently ignored → 400 on every call; the entire ACL-read surface was unreachable | ✅ sends `ref` (required); verified |
+
+Plus a **test-infra fix**: the harness `cleanup()` deleted snapshots before terminating the sandboxes that referenced them (→ leaked a dangling snapshot); now terminates sandboxes first.
+
+### More findings (not our bug — for the Tenki team / docs)
+- **Illegal state transitions are idempotent successes**, not conflicts: resume-a-running / pause-a-paused return 200. The matrix expected a conflict; tenki-mcp forwards cleanly. (Relax the matrix, or add a state pre-check if strict guarding is wanted.)
+- **Template build failed in the snapshot phase** on some runs (`internal server error … retryable`) — a Tenki control-plane reliability gap; the MCP wiring is correct (build ran, `buildLogTail` showed the provision step). It *did* succeed on a later run.
+- **`build_template` with `image_name` 400s on a from-scratch (legacy-mode) template** — image_name is only for typed templates. Tool forwards correctly; document.
+- **`create_preview_url` succeeds without `allow_inbound`** — the precondition in the tool description isn't enforced at URL-creation. Soften the description.
+- **Snapshot-retention bounds disagree** across two tools (`min(0)` vs `positive()`); worth aligning. `idle=0`/`max_duration=0` disable reaping/lifetime — a by-design cost footgun for workspace defaults.
+
+### No leaks
+Every suite self-cleans (harness resource tracker). Post-run audit: created sandboxes terminated, test volumes/templates deleted. (The 4 pre-existing stuck volumes remain — Tenki-side.)
+

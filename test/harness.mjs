@@ -142,12 +142,17 @@ export class Harness {
 		}
 	}
 
-	/** Best-effort teardown of every tracked resource. Never throws. */
+	/**
+	 * Best-effort teardown of every tracked resource. Never throws.
+	 * Order matters: terminate sandboxes FIRST — a snapshot used to boot a sandbox
+	 * (or a volume attached to one) can't be deleted while that sandbox is alive
+	 * ("snapshot is referenced by one or more resources"), which would leak it.
+	 */
 	async cleanup() {
-		for (const id of this.resources.snapshot) await this.call("tenki_delete_snapshot", { snapshot_id: id }).catch(() => {});
-		for (const id of this.resources.template) await this.call("tenki_delete_template", { template_id: id }).catch(() => {});
-		for (const id of this.resources.volume) await this.call("tenki_delete_volume", { volume_id: id }).catch(() => {});
 		for (const id of this.resources.sandbox) await this.call("tenki_terminate_sandbox", { session_id: id }).catch(() => {});
+		for (const id of this.resources.snapshot) await this.call("tenki_delete_snapshot", { snapshot_id: id }).catch(() => {});
+		for (const id of this.resources.volume) await this.call("tenki_delete_volume", { volume_id: id }).catch(() => {});
+		for (const id of this.resources.template) await this.call("tenki_delete_template", { template_id: id }).catch(() => {});
 	}
 
 	report() {

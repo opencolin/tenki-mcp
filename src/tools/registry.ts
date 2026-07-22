@@ -170,8 +170,7 @@ export function registerRegistry(server: McpServer, client: TenkiClient): void {
 		{
 			reference: z
 				.string()
-				.optional()
-				.describe("Optional image reference to list grants for a single image."),
+				.describe("Image reference to list grants for (required — the API needs a target image)."),
 			page_size: z.number().int().positive().optional().describe("Max grants to return per page."),
 			page_token: z
 				.string()
@@ -180,8 +179,10 @@ export function registerRegistry(server: McpServer, client: TenkiClient): void {
 		},
 		async ({ reference, page_size, page_token }) =>
 			ok(
+				// The API field is `ref` (not `reference`) and a target is required:
+				// "exactly one of image_id or ref is required" (live-verified).
 				await client.control("ListRegistryShareGrants", {
-					...(reference !== undefined ? { reference } : {}),
+					ref: reference,
 					...(page_size !== undefined ? { pageSize: page_size } : {}),
 					...(page_token !== undefined ? { pageToken: page_token } : {}),
 				}),

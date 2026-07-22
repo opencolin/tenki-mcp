@@ -41,7 +41,7 @@ if (!token) {
 const baseUrl = process.env.TENKI_API_ENDPOINT || process.env.TENKI_API_URL || undefined;
 const client = new TenkiClient(token, baseUrl);
 
-const server = new McpServer({ name: "tenki", version: "1.0.1" });
+const server = new McpServer({ name: "tenki", version: "1.0.2" });
 
 /** Every tool module registers here. Add new domains to this list. */
 const modules = [
