@@ -66,6 +66,17 @@ Full per-release breakdown in [CHANGELOG.md](CHANGELOG.md); the plan through v2.
 
 Set one of `TENKI_API_KEY` or `TENKI_AUTH_TOKEN`. The header is chosen by token prefix: `tk_…` → `Authorization: Bearer`, `ory_st_…` → `X-Session-Token`, otherwise a session cookie. Override the endpoint with `TENKI_API_ENDPOINT` (default `https://api.tenki.cloud`).
 
+## Host it over HTTP (v2.0-alpha)
+
+Besides stdio, the server speaks **Streamable HTTP** so it can be hosted for remote MCP clients:
+
+```bash
+TENKI_MCP_TRANSPORT=http PORT=3000 TENKI_API_KEY=… node dist/index.js
+# → tenki-mcp running on http://localhost:3000/mcp
+```
+
+Point an HTTP-capable MCP client at `http://localhost:3000/mcp`. v2.0-alpha uses one shared `TENKI_API_KEY` for all sessions; per-request auth (multi-tenant hosting) is a later step. Verified end-to-end (`test/http-transport.test.mjs`: connect → tools/list → tool call over HTTP). Streaming exec (`StreamCommandOutput`) is designed and proven feasible over `fetch` — see `docs/plans/V2-STATE.md`.
+
 ## How it works
 
 Tenki's API is **ConnectRPC** — JSON over HTTP/1.1, not REST. Every control-plane call is `POST https://api.tenki.cloud/tenki.sandbox.v1.SandboxService/{Method}` with a lowerCamelCase JSON body. Per-session file I/O runs on a **separate data-plane endpoint** returned at create time, authenticated with a short-lived session certificate. This server owns both transports so the tools stay one-liners.

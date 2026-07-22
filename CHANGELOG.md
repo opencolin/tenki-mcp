@@ -2,6 +2,12 @@
 
 All notable changes to tenki-mcp. This project follows semantic versioning.
 
+## [2.0.0-alpha.0] — 2026-07-21 — HTTP transport (v2 begins)
+
+The server now speaks **Streamable HTTP** in addition to stdio, so it can be hosted for remote MCP clients (`TENKI_MCP_TRANSPORT=http PORT=3000`). Verified end-to-end (connect → tools/list → tool call over HTTP; stdio unchanged, 84 tools). Server construction refactored into a shared `createServer()` factory (src/server.ts) used by both transports.
+
+**Gating experiment done:** Tenki's gateway accepts Connect *streaming* over HTTP/1.1 (application/connect+json → 200), so v2 streaming exec is feasible with plain fetch + envelope framing — no heavy dependency. Streaming exec (StreamCommandOutput) is designed + unblocked but not yet built; per-request HTTP auth is deferred. See docs/plans/V2-STATE.md. Alpha: not for production hosting yet.
+
 ## [1.0.2] — 2026-07-21 — Fixes from comprehensive testing
 
 A PM-council test matrix (34 scenarios) executed via a worktree fan-out against live Tenki found **two real request-shape bugs**, both fixed and verified end-to-end:

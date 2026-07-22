@@ -6,32 +6,18 @@
  * tools, so any agent — Claude, Codex, Cursor — can create sandboxes, run code,
  * manage files/snapshots/volumes/templates/images, run git, and expose preview URLs.
  *
- * Tools live in self-registering modules under ./tools; this file wires the client,
- * registers each module, and connects the stdio transport.
+ * Transports:
+ *   - stdio (default) — for local MCP clients (Claude Desktop, Cursor, Claude Code).
+ *   - HTTP/SSE — set TENKI_MCP_TRANSPORT=http (+ PORT, default 3000) to host it.
  *
- * Auth: set TENKI_API_KEY (or TENKI_AUTH_TOKEN) in the environment.
+ * Tools live in self-registering modules under ./tools; the server factory is in
+ * ./server.ts. Auth: set TENKI_API_KEY (or TENKI_AUTH_TOKEN) in the environment.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 import { TenkiClient } from "./client.js";
-import { registerIdentity } from "./tools/identity.js";
-import { registerRun } from "./tools/run.js";
-import { registerSandboxes } from "./tools/sandboxes.js";
-import { registerExec } from "./tools/exec.js";
-import { registerFiles } from "./tools/files.js";
-import { registerGit } from "./tools/git.js";
-import { registerPorts } from "./tools/ports.js";
-import { registerFilesOps } from "./tools/files_ops.js";
-import { registerSessionsAdmin } from "./tools/sessions_admin.js";
-import { registerPreviews } from "./tools/previews.js";
-import { registerSnapshots } from "./tools/snapshots.js";
-import { registerVolumes } from "./tools/volumes.js";
-import { registerTemplates } from "./tools/templates.js";
-import { registerRegistry } from "./tools/registry.js";
-import { registerWorkspace } from "./tools/workspace.js";
-import { registerArtifacts } from "./tools/artifacts.js";
-import { registerSsh } from "./tools/ssh.js";
+import { createServer } from "./server.js";
+import { startHttp } from "./http.js";
 
 const token = process.env.TENKI_AUTH_TOKEN || process.env.TENKI_API_KEY;
 if (!token) {
@@ -41,31 +27,12 @@ if (!token) {
 const baseUrl = process.env.TENKI_API_ENDPOINT || process.env.TENKI_API_URL || undefined;
 const client = new TenkiClient(token, baseUrl);
 
-const server = new McpServer({ name: "tenki", version: "1.0.2" });
-
-/** Every tool module registers here. Add new domains to this list. */
-const modules = [
-	registerIdentity,
-	registerRun,
-	registerSandboxes,
-	registerExec,
-	registerFiles,
-	registerGit,
-	registerPorts,
-	registerFilesOps,
-	registerSessionsAdmin,
-	registerPreviews,
-	registerSnapshots,
-	registerVolumes,
-	registerTemplates,
-	registerRegistry,
-	registerWorkspace,
-	registerArtifacts,
-	registerSsh,
-];
-for (const register of modules) register(server, client);
-
 async function main() {
+	if ((process.env.TENKI_MCP_TRANSPORT || "stdio").toLowerCase() === "http") {
+		startHttp(client, Number(process.env.PORT) || 3000);
+		return;
+	}
+	const server = createServer(client);
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 	console.error("tenki-mcp running on stdio");
