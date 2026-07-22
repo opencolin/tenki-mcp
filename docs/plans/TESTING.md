@@ -37,3 +37,5 @@ TENKI_API_KEY="$KEY" node test/run.mjs
 
 ## Tick log
 - 2026-07-21: data-plane re-probed → reachable (2.3s to RUNNING). Test council launched (`wh1y4ahcr`). Harness built + smoke-verified (`55567df`). Next: matrix → fan-out domain suites.
+
+- 2026-07-21: Council matrix (34 scenarios) + harness + 5 suites (68 checks). Coverage 16/0/0; fan-out client-integration 14/0/0, errors-edge 15/0/0, journeys 5/0/0, admin-previews 18/0/0 — ALL GREEN. Found + fixed 2 real bugs (attach_volume nested shape, list_image_share_grants ref) → v1.0.2. Full report: docs/plans/TEST-REPORT.md. Testing goal complete.
