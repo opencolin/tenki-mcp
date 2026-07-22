@@ -32,7 +32,7 @@ export function registerTemplates(server: McpServer, client: TenkiClient): void 
 		{
 			name: z.string().describe("Human-readable template name."),
 			base_image_id: z.string().optional().describe("Base image ID to build on top of."),
-			setup_script: z.string().optional().describe("Shell script run at build time to provision the image."),
+			setup_script: z.string().optional().describe("Shell script run at build time to provision the image. Required for a from-scratch template (the API rejects a create without it unless you derive from a parent template/image)."),
 			start_cmd: z.string().optional().describe("Command run when a sandbox boots from this template."),
 			cpu_cores: z.number().int().min(1).max(16).optional().describe("Default vCPUs for sandboxes from this template (1-16)."),
 			memory_mb: z.number().int().min(512).max(65536).optional().describe("Default memory in MB (512-65536)."),

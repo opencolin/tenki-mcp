@@ -1,7 +1,7 @@
 {
   "name": "tenki-mcp",
   "version": "1.0.1",
-  "description": "Model Context Protocol server for Tenki Cloud \u2014 disposable microVM sandboxes for AI agents. Create sandboxes, run code, read/write files, run git, expose preview URLs \u2014 from any MCP client.",
+  "description": "Model Context Protocol server for Tenki Cloud — disposable microVM sandboxes for AI agents. Create sandboxes, run code, read/write files, run git, expose preview URLs — from any MCP client.",
   "type": "module",
   "bin": {
     "tenki-mcp": "dist/index.js"
@@ -16,7 +16,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "node test/coverage.test.mjs"
   },
   "keywords": [
     "tenki",

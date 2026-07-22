@@ -19,6 +19,7 @@
  */
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types.js";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
@@ -38,10 +39,14 @@ export function loadToken() {
 	}
 }
 
-/** True if an error looks like the intermittent data-plane network failure, not a bug. */
+/**
+ * True if an error looks like a transient network/environment condition rather
+ * than a code bug: the intermittent data-plane endpoint, or a sandbox that can't
+ * reach the internet (outbound/DNS flakiness). Such checks SKIP, they don't fail.
+ */
 export function isDataPlaneOutage(err) {
 	const m = (err?.message ?? String(err)).toLowerCase();
-	return /fetch failed|connect timeout|timeout|econn|100\.\d+\.\d+\.\d+/.test(m);
+	return /fetch failed|connect timeout|timeout|econn|100\.\d+\.\d+\.\d+|could not resolve|resolve host|network is unreachable|temporary failure in name resolution/.test(m);
 }
 
 export class Harness {
@@ -69,9 +74,13 @@ export class Harness {
 		return h;
 	}
 
-	/** Call a tool and return its parsed JSON result. Throws on isError. */
+	/**
+	 * Call a tool and return its parsed JSON result. Throws on isError.
+	 * Uses a generous 120s timeout: some ops (pause, snapshot, template build)
+	 * exceed the MCP client's 60s default — a real integration note for hosts.
+	 */
 	async call(name, args = {}) {
-		const res = await this.client.callTool({ name, arguments: args });
+		const res = await this.client.callTool({ name, arguments: args }, CallToolResultSchema, { timeout: 120000 });
 		const text = res.content?.find((c) => c.type === "text")?.text ?? "";
 		if (res.isError) throw new Error(`${name}: ${text.slice(0, 300)}`);
 		try {

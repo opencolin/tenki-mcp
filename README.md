@@ -58,7 +58,7 @@ Once published to npm this becomes `"command": "npx", "args": ["-y", "tenki-mcp"
 | **Volumes** | create · get · list · update · delete · resize · attach · detach |
 | **Templates** | create · get · list · update · delete · build · cancel-build · get-build · list-active-builds |
 | **Registry** (custom images) | publish · get · list · set-visibility · delete · delete-version · resolve-ref · share · list-share-grants |
-| **Workspace** | `tenki_get_workspace_usage` · `tenki_get_workspace_sandbox_settings` · `tenki_update_workspace_sandbox_settings` |
+| **Workspace** | `tenki_get_workspace_usage` · `tenki_get_workspace_settings` · `tenki_update_workspace_settings` · `tenki_get_snapshot_retention_settings` · `tenki_update_snapshot_retention_settings` |
 
 Full per-release breakdown in [CHANGELOG.md](CHANGELOG.md); the plan through v2.0 is in [docs/plans/ROADMAP.md](docs/plans/ROADMAP.md).
 
