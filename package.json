@@ -1,7 +1,7 @@
 {
   "name": "tenki-mcp",
   "version": "1.0.1",
-  "description": "Model Context Protocol server for Tenki Cloud — disposable microVM sandboxes for AI agents. Create sandboxes, run code, read/write files, run git, expose preview URLs — from any MCP client.",
+  "description": "Model Context Protocol server for Tenki Cloud \u2014 disposable microVM sandboxes for AI agents. Create sandboxes, run code, read/write files, run git, expose preview URLs \u2014 from any MCP client.",
   "type": "module",
   "bin": {
     "tenki-mcp": "dist/index.js"
@@ -38,5 +38,13 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opencolin/tenki-mcp.git"
+  },
+  "homepage": "https://github.com/opencolin/tenki-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/opencolin/tenki-mcp/issues"
   }
 }
